@@ -1,7 +1,8 @@
 import { Icon } from '@iconify/react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 // , useEffect
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -11,15 +12,18 @@ import TextField from '@material-ui/core/TextField';
 // material
 import { Grid, Button, Container, Stack, Typography } from '@material-ui/core';
 // components
+import qs from 'querystring';
+import moment from 'moment';
 import Page from '../components/Page';
 import { BlogPostCard } from '../components/_dashboard/blog';
 //
-import POSTS from '../_mocks_/blog';
 
 // ----------------------------------------------------------------------
 
 export default function Blog() {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [blogslist, setblogslist] = useState();
   const [inputFields, setinputField] = useState([
     {
       title: '',
@@ -27,6 +31,15 @@ export default function Blog() {
       content: ''
     }
   ]);
+
+  ///
+  useEffect(() => {
+    axios.get('https://bytelearn-server.herokuapp.com/api/posts').then((response) => {
+      setblogslist(response.data);
+      console.log(moment(response.data[0].createdAt).format('MMMM Do YYYY, h:mm:ss a'));
+      setLoading(false);
+    });
+  }, []);
 
   ///
   const handleClickOpen = () => {
@@ -47,42 +60,35 @@ export default function Blog() {
     e.preventDefault();
 
     // // data
-    // const headers = {
-    //   'Content-Type': 'application/x-www-form-urlencoded'
-    // };
+    const headers = {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    };
 
-    // const dataitem = {
-    //   type: inputFields[0].type,
-    //   itemname: inputFields[0].itemname,
-    //   category: inputFields[0].category,
-    //   unit: inputFields[0].unit,
-    //   code: inputFields[0].code,
-    //   description: inputFields[0].description,
-    //   price: inputFields[0].price,
-    //   gst: inputFields[0].gst,
-    //   intax,
-    //   isInventory: false
-    // };
+    const dataitem = {
+      title: inputFields[0].title,
+      categories: inputFields[0].categories,
+      content: inputFields[0].content
+    };
 
-    // console.log(qs.stringify(dataitem));
+    console.log(qs.stringify(dataitem));
 
-    // axios
-    //   .post('https://solarladderserver.herokuapp.com/api/items', qs.stringify(dataitem), {
-    //     headers
-    //   })
-    //   .then((response) => {
-    //     alert('Item added Successfully !!');
-    //     console.log('Status: ', response.status);
-    //     console.log('Data: ', response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error('Something went wrong!', error);
-    //   });
-    setOpen(false);
-    // setTimeout(() => {
-    //   window.location.reload();
-    //   setOpen(false);
-    // }, 2000);
+    axios
+      .post('https://bytelearn-server.herokuapp.com/api/posts', qs.stringify(dataitem), {
+        headers
+      })
+      .then((response) => {
+        alert('Item added Successfully !!');
+        console.log('Status: ', response.status);
+        console.log('Data: ', response.data);
+      })
+      .catch((error) => {
+        console.error('Something went wrong!', error);
+      });
+    // setOpen(false);
+    setTimeout(() => {
+      window.location.reload();
+      setOpen(false);
+    }, 2000);
   };
 
   return (
@@ -123,7 +129,7 @@ export default function Blog() {
               margin="dense"
               label="Categories"
               type="text"
-              name="code"
+              name="categories"
               value={inputFields.categories}
               onChange={handleChangetype}
               fullWidth
@@ -152,9 +158,11 @@ export default function Blog() {
         </Dialog>
 
         <Grid container spacing={3}>
-          {POSTS.map((post, index) => (
-            <BlogPostCard key={post.id} post={post} index={index} />
-          ))}
+          {!loading &&
+            blogslist.map((post, index) => (
+              <BlogPostCard key={post.id} post={post} index={index} />
+              // <p>{post.created_at}</p>
+            ))}
         </Grid>
       </Container>
     </Page>
