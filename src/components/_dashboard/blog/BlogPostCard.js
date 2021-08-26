@@ -266,7 +266,6 @@ export default function BlogPostCard({ post, index }) {
             <DialogContent>
               <form>
                 <TextField
-                  autoFocus
                   fullWidth
                   margin="dense"
                   variant="outlined"
@@ -287,6 +286,7 @@ export default function BlogPostCard({ post, index }) {
                   fullWidth
                 />
                 <TextField
+                  autoFocus
                   margin="dense"
                   name="content"
                   label="Content"
