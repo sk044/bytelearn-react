@@ -120,8 +120,9 @@ export default function Blog() {
               label="Title"
               value={inputFields.title}
               type="text"
-              onChange={handleChangetype}
+              onBlur={handleChangetype}
               fullWidth
+              required
             />
 
             <TextField
@@ -142,6 +143,7 @@ export default function Blog() {
               type="text"
               value={inputFields.content}
               onChange={handleChangetype}
+              multiline
               fullWidth
             />
             <br />

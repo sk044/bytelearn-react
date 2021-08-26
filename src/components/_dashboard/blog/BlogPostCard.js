@@ -63,7 +63,7 @@ export default function BlogPostCard({ post, index }) {
   const [openedit, setOpenEdit] = useState(false);
   const latestPostLarge = index === 0;
   const latestPost = index === 1 || index === 2;
-  const [editFields, seteditField] = useState([
+  const [inputFields, setinputFeilds] = useState([
     {
       title: post.title,
       categories: post.categories,
@@ -95,9 +95,9 @@ export default function BlogPostCard({ post, index }) {
     };
 
     const dataitem = {
-      title: editFields[0].title,
-      categories: editFields[0].categories,
-      content: editFields[0].content
+      title: inputFields[0].title,
+      categories: inputFields[0].categories,
+      content: inputFields[0].content
     };
 
     console.log(qs.stringify(dataitem));
@@ -119,9 +119,9 @@ export default function BlogPostCard({ post, index }) {
   };
 
   const handleChangetype = (event) => {
-    const values = [...editFields];
+    const values = [...inputFields];
     values[0][event.target.name] = event.target.value;
-    seteditField(values);
+    setinputFeilds(values);
   };
 
   const handleDelete = (e) => {
@@ -264,37 +264,39 @@ export default function BlogPostCard({ post, index }) {
           <Dialog open={openedit} onClose={handleCloseEdit} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Create Item</DialogTitle>
             <DialogContent>
-              <TextField
-                autoFocus
-                margin="dense"
-                name="title"
-                label="Title"
-                value={editFields[0] && editFields[0].title}
-                type="text"
-                onChange={handleChangetype}
-                fullWidth
-              />
+              <form>
+                <TextField
+                  autoFocus
+                  fullWidth
+                  margin="dense"
+                  variant="outlined"
+                  name="title"
+                  label="Title"
+                  value={inputFields[0].title}
+                  type="text"
+                  onChange={handleChangetype}
+                />
 
-              <TextField
-                autoFocus
-                margin="dense"
-                label="Categories"
-                type="text"
-                name="categories"
-                value={editFields[0] && editFields[0].categories}
-                onChange={handleChangetype}
-                fullWidth
-              />
-              <TextField
-                autoFocus
-                margin="dense"
-                name="content"
-                label="Content"
-                type="text"
-                value={editFields[0] && editFields[0].content}
-                onChange={handleChangetype}
-                fullWidth
-              />
+                <TextField
+                  margin="dense"
+                  label="Categories"
+                  type="text"
+                  name="categories"
+                  value={inputFields[0].categories}
+                  onChange={handleChangetype}
+                  fullWidth
+                />
+                <TextField
+                  margin="dense"
+                  name="content"
+                  label="Content"
+                  type="text"
+                  value={inputFields[0].content}
+                  onChange={handleChangetype}
+                  fullWidth
+                  multiline
+                />
+              </form>
               <br />
               <br />
             </DialogContent>
